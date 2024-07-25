@@ -8,6 +8,12 @@ import booksUserModel from "../models/booksModel.js"
 //  Catch Async error middleware for handling async errors 
 export const CreateBook = catchAsyncErrors(async (req, res, next) => {
     let reqData = req.body;
+
+       // Check if the user is authenticated and has the role of 'Admin and Author'
+   if (req.user.role === "Reader") {
+    return next(new ErrorHandler("Access denied. Admins and Authors only.", 403));
+  }
+  
    // JOi validation
     const validator = Joi.object({
         title: Joi.string().required().messages({
@@ -52,6 +58,12 @@ export const CreateBook = catchAsyncErrors(async (req, res, next) => {
 
 export const UpdateBook = catchAsyncErrors(async (req, res, next) => {
     let reqData = req.body;
+
+    // Check if the user is authenticated and has the role of 'Admin and Author'
+   if (req.user.role === "Reader") {
+    return next(new ErrorHandler("Access denied. Admins and Authors only.", 403));
+  }
+  
     // JOi validation
      const validator = Joi.object({
          title: Joi.string().required().messages({
@@ -100,6 +112,12 @@ export const GetBook = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const DeleteBook = catchAsyncErrors(async (req, res, next) => {
+
+   // Check if the user is authenticated and has the role of 'Admin'
+   if (req.user.role !== "Admin") {
+    return next(new ErrorHandler("Access denied. Admins only.", 403));
+  }
+  
     let proData = await booksUserModel.deleteOne({_id: req.params.id, }) ;
     if (proData) {
       return res.status(200).json({

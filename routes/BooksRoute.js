@@ -3,7 +3,6 @@ import { CreateBook,UpdateBook,GetBook,DeleteBook } from "../controllers/booksCo
 import isAuthenticated from "../middlewares/auth.js"
  
 const router = express.Router();
-
 router.post("/create",isAuthenticated,CreateBook);
 router.post("/update/:id",isAuthenticated, UpdateBook)
 router.get("/get/:id",isAuthenticated, GetBook)
